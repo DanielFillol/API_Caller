@@ -1,2 +1,3 @@
 # API_Caller
-Code for making http request with a .csv file with go routines. Login functionality.
+Simple example script for calling API.
+Build specific for this [API](https://github.com/DanielFillol/API_Names)
