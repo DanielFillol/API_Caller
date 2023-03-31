@@ -8,7 +8,7 @@ import (
 //AsyncAPIRequest uses go wait groups to run parallel routines on APIRequest, how many is set by numberOfWorkers.
 //	all requests are organized by StreamInputs
 //	all responses are returned as []models.WriteStruct to be uses by readFile function
-func AsyncAPIRequest(users []string, email string, password string, numberOfWorkers int) ([]models.WriteStruct, error) {
+func AsyncAPIRequest(users []string, email string, password string, numberOfWorkers int, APIkey string) ([]models.WriteStruct, error) {
 	done := make(chan struct{})
 	defer close(done)
 
@@ -23,7 +23,7 @@ func AsyncAPIRequest(users []string, email string, password string, numberOfWork
 		// spawn N worker goroutines, each is consuming a shared input channel.
 		go func() {
 			for input := range inputCh {
-				bodyStr, err := APIRequest(input, email, password)
+				bodyStr, err := APIRequest(input, email, password, APIkey)
 				resultCh <- models.WriteStruct{
 					SearchName:     bodyStr.SearchName,
 					ID:             bodyStr.ID,

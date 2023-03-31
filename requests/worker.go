@@ -3,6 +3,7 @@ package requests
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/DanielFillol/API_Caller/models"
 	"io/ioutil"
@@ -11,11 +12,9 @@ import (
 	"time"
 )
 
-var APIkey string
-
 //APIRequest uses Call to make a request to the API. Here is our main worker
-func APIRequest(name string, email string, password string) (models.WriteStruct, error) {
-	res, err := Call("http://localhost:8080/metaphone/"+name, "GET", email, password)
+func APIRequest(name string, email string, password string, APIkey string) (models.WriteStruct, error) {
+	res, err := Call("http://localhost:8080/metaphone/"+name, "GET", email, password, APIkey)
 	if err != nil {
 		return models.WriteStruct{}, err
 	}
@@ -46,13 +45,14 @@ func APIRequest(name string, email string, password string) (models.WriteStruct,
 }
 
 //Call creates a http.Client passing KEY on the header
-func Call(url, method string, email string, password string) (*http.Response, error) {
+func Call(url, method string, email string, password string, APIkey string) (*http.Response, error) {
 	client := &http.Client{Timeout: time.Second * 10}
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil, err
 	}
+
 	req.Header.Add("Token", APIkey)
 	response, err := client.Do(req)
 	if err != nil {
@@ -60,7 +60,7 @@ func Call(url, method string, email string, password string) (*http.Response, er
 	}
 
 	if response.StatusCode == http.StatusUnauthorized {
-		c, err := login(email, password)
+		c, err := Login(email, password)
 		if err != nil {
 			return nil, err
 		}
@@ -80,11 +80,15 @@ func Call(url, method string, email string, password string) (*http.Response, er
 		return r, nil
 	}
 
+	if response.StatusCode == http.StatusTooManyRequests {
+		return nil, errors.New(strconv.Itoa(http.StatusTooManyRequests))
+	}
+
 	return response, nil
 }
 
-//login on the API returning the cookie
-func login(email string, password string) (*http.Cookie, error) {
+//Login on the API returning the cookie
+func Login(email string, password string) (*http.Cookie, error) {
 	url := "http://localhost:8080/login"
 
 	// Define the request body as a JSON object
@@ -99,8 +103,10 @@ func login(email string, password string) (*http.Cookie, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

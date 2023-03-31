@@ -10,25 +10,32 @@ import (
 const (
 	EMAIL    = "root@root.com"
 	PASSWORD = "JI1O2J2O1U09WURPIKHJFLSDKJWOIURJWOIUXJIOQWMKJX"
-	WORKERS  = 10
+	WORKERS  = 4
 )
 
 func main() {
-	//CSV read
+	//load data to be requested
 	names, err := csv.Read("names.csv", ',')
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	//login on API
 	start := time.Now()
-	results, err := requests.AsyncAPIRequest(names, EMAIL, PASSWORD, WORKERS)
+	login, err := requests.Login(EMAIL, PASSWORD)
+	if err != nil {
+		return
+	}
+
+	//request API
+	results, err := requests.AsyncAPIRequest(names, EMAIL, PASSWORD, WORKERS, login.Value)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("finished in ", time.Since(start))
 
-	//CSV write
-	err = csv.Write("result.csv", "result", results)
+	//download API response to files
+	err = csv.Write("result", "result", results)
 	if err != nil {
 		fmt.Println(err)
 	}
