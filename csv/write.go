@@ -19,7 +19,7 @@ func Write(fileName string, folderName string, decisions []models.WriteStruct) e
 		rows = append(rows, generateRow(decision))
 	}
 
-	cf, err := createFile(folderName + "/" + fileName + ".readFile")
+	cf, err := createFile(folderName + "/" + fileName + ".csv")
 	if err != nil {
 		return err
 	}
