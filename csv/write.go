@@ -62,11 +62,6 @@ func generateHeaders() []string {
 //generateRow function takes in a single models.WriteStruct argument and returns a slice of strings containing the values to be written in a row of the CSV file.
 //	It uses a loop to concatenate all the NameVariations into a single string separated by " | "
 func generateRow(result models.WriteStruct) []string {
-	var r string
-	for _, variation := range result.NameVariations {
-		r += variation + " | "
-	}
-
 	return []string{
 		result.SearchName,
 		result.ID,
@@ -76,6 +71,6 @@ func generateRow(result models.WriteStruct) []string {
 		result.Name,
 		result.Classification,
 		result.Metaphone,
-		r,
+		result.NameVariations,
 	}
 }

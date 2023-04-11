@@ -12,18 +12,18 @@ type ResponseAPI struct {
 	Name            string    `json:"Name"`
 	Classification  string    `json:"Classification"`
 	Metaphone       string    `json:"Metaphone"`
-	NameVariations  []string  `json:"NameVariations"`
+	NameVariations  string    `json:"NameVariations"`
 }
 
 type WriteStruct struct {
-	SearchName     string   `json:"SearchName,omitempty"`
-	ID             string   `json:"ID"`
-	CreatedAt      string   `json:"CreatedAt"`
-	UpdatedAt      string   `json:"UpdatedAt"`
-	DeletedAt      string   `json:"DeletedAt"`
-	Name           string   `json:"Name"`
-	Classification string   `json:"Classification"`
-	Metaphone      string   `json:"Metaphone"`
-	NameVariations []string `json:"NameVariations"`
-	Err            error    `json:"err"`
+	SearchName     string `json:"SearchName,omitempty"`
+	ID             string `json:"ID"`
+	CreatedAt      string `json:"CreatedAt"`
+	UpdatedAt      string `json:"UpdatedAt"`
+	DeletedAt      string `json:"DeletedAt"`
+	Name           string `json:"Name"`
+	Classification string `json:"Classification"`
+	Metaphone      string `json:"Metaphone"`
+	NameVariations string `json:"NameVariations"`
+	Err            error  `json:"err"`
 }
